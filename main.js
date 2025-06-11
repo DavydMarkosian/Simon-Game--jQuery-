@@ -1,9 +1,14 @@
 let arrayOfRandoms = [];
 let clickedBlocks = [];
 let lvl = 1;
+let isAnimating = true;
 
 //================== start levels ===============
 function startLvl() {
+  arrayOfRandoms = [];
+  clickedBlocks = [];
+  isAnimating = true;
+
   for (let i = 0; i < lvl; i++) {
     setTimeout(function () {
       let randomNumber = Math.floor(Math.random() * 4) + 1;
@@ -18,38 +23,45 @@ function startLvl() {
 
       arrayOfRandoms.push(randomNumber);
 
-      console.log(arrayOfRandoms);
+      if (i === lvl - 1) {
+        isAnimating = false;
+      }
+
       return arrayOfRandoms;
     }, i * 800);
   }
 }
-startLvl();
+
+addClickFn();
 
 //================= choose the block =========================
-$(".block").click(function (e) {
-  clickedBlocks.push(Number(e.target.id));
+function addClickFn() {
+  $(".block").click(function (e) {
+    if (isAnimating) return;
 
-  $(this).animate({ opacity: 0.5 });
-  $(this).animate({ opacity: 1 });
-  $(this).addClass(" boxShadow transform");
+    clickedBlocks.push(Number(e.target.id));
 
-  setTimeout(function () {
-    $(".block").removeClass(" boxShadow transform");
-  }, 300);
+    $(this).animate({ opacity: 0.5 });
+    $(this).animate({ opacity: 1 });
+    $(this).addClass(" boxShadow transform");
 
-  compareArrays(clickedBlocks, arrayOfRandoms, e.target);
-});
+    setTimeout(function () {
+      $(".block").removeClass(" boxShadow transform");
+    }, 300);
 
+    compareArrays(clickedBlocks, arrayOfRandoms, e.target);
+  });
+}
 //==================== conditions (Checking) ========================
 
 function compareArrays(clickedBlocks, arrayOfRandoms, target) {
-  console.log(`your choice: ${target.id}`);
+  //   console.log(`your choice: ${target.id}`);
 
   for (let i = 0; i < clickedBlocks.length; i++) {
     switch (clickedBlocks[i] !== arrayOfRandoms[i]) {
       case true:
-        console.log("you lose");
         $(target).addClass("boxShadowRed transform");
+        lose();
 
         setTimeout(function () {
           $(target).removeClass(" boxShadowRed transform");
@@ -57,13 +69,13 @@ function compareArrays(clickedBlocks, arrayOfRandoms, target) {
         setTimeout(function () {
           $(target).addClass(" boxShadowRed transform");
         }, 300);
-
+        // console.log(clickedBlocks[clickedBlocks.length - 1]);
+        // console.log(arrayOfRandoms[arrayOfRandoms.length - 1]);
         break;
 
       case false:
         $(target).addClass("boxShadowGreen transform");
-        console.log(clickedBlocks);
-
+        // console.log(clickedBlocks);
         setTimeout(function () {
           $(target).removeClass(" boxShadowGreen transform");
         }, 300);
@@ -74,7 +86,12 @@ function compareArrays(clickedBlocks, arrayOfRandoms, target) {
         break;
     }
   }
-  if (clickedBlocks.length === arrayOfRandoms.length) {
+
+  if (
+    clickedBlocks.length === arrayOfRandoms.length &&
+    clickedBlocks[clickedBlocks.length - 1] ===
+      arrayOfRandoms[arrayOfRandoms.length - 1]
+  ) {
     lvlCounter();
     setTimeout(() => {
       startLvl();
@@ -84,8 +101,23 @@ function compareArrays(clickedBlocks, arrayOfRandoms, target) {
 
 function lvlCounter() {
   lvl = lvl + 1;
-  console.log("lvl: " + lvl);
   $("h1").text(`Level ${lvl}`);
   return lvl;
 }
-console.log(lvl);
+
+function lose() {
+  lvl = 1;
+  $("h1").text("You lose...");
+  $("#btnStart").removeClass("visible");
+}
+
+$("#btnStart").on("click", () => {
+  $("h1").text(`Level ${lvl}`);
+  $(".block").removeClass(" boxShadowRed transform");
+
+  setTimeout(() => {
+    startLvl();
+  }, 1000);
+
+  $("#btnStart").addClass("visible");
+});
