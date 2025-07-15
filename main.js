@@ -3,6 +3,18 @@ let clickedBlocks = [];
 let lvl = 1;
 let isAnimating = true;
 
+// ================== Button start ====================
+$("#btnStart").on("click", () => {
+  $("h1").text(`Level ${lvl}`);
+  $(".block").removeClass(" boxShadowRed transform");
+
+  setTimeout(() => {
+    startLvl();
+  }, 1000);
+
+  $("#btnStart").addClass("visible");
+});
+
 //================== start levels ===============
 function startLvl() {
   arrayOfRandoms = [];
@@ -24,15 +36,15 @@ function startLvl() {
       arrayOfRandoms.push(randomNumber);
 
       if (i === lvl - 1) {
-        isAnimating = false;
+        setTimeout(() => {
+          isAnimating = false;
+        }, 800);
       }
-
       return arrayOfRandoms;
     }, i * 800);
   }
+  addClickFn();
 }
-
-addClickFn();
 
 //================= choose the block =========================
 function addClickFn() {
@@ -55,36 +67,31 @@ function addClickFn() {
 //==================== conditions (Checking) ========================
 
 function compareArrays(clickedBlocks, arrayOfRandoms, target) {
-  //   console.log(`your choice: ${target.id}`);
+  let i = clickedBlocks.length - 1;
 
-  for (let i = 0; i < clickedBlocks.length; i++) {
-    switch (clickedBlocks[i] !== arrayOfRandoms[i]) {
-      case true:
-        $(target).addClass("boxShadowRed transform");
-        lose();
+  switch (clickedBlocks[i] !== arrayOfRandoms[i]) {
+    case true:
+      $(target).addClass("boxShadowRed transform");
+      lose();
 
-        setTimeout(function () {
-          $(target).removeClass(" boxShadowRed transform");
-        }, 200);
-        setTimeout(function () {
-          $(target).addClass(" boxShadowRed transform");
-        }, 300);
-        // console.log(clickedBlocks[clickedBlocks.length - 1]);
-        // console.log(arrayOfRandoms[arrayOfRandoms.length - 1]);
-        break;
+      setTimeout(function () {
+        $(target).removeClass(" boxShadowRed transform");
+      }, 200);
+      setTimeout(function () {
+        $(target).addClass(" boxShadowRed transform");
+      }, 300);
+      break;
 
-      case false:
-        $(target).addClass("boxShadowGreen transform");
-        // console.log(clickedBlocks);
-        setTimeout(function () {
-          $(target).removeClass(" boxShadowGreen transform");
-        }, 300);
+    case false:
+      $(target).addClass("boxShadowGreen transform");
+      setTimeout(function () {
+        $(target).removeClass(" boxShadowGreen transform");
+      }, 300);
 
-        break;
+      break;
 
-      default:
-        break;
-    }
+    default:
+      break;
   }
 
   if (
@@ -110,14 +117,3 @@ function lose() {
   $("h1").text("You lose...");
   $("#btnStart").removeClass("visible");
 }
-
-$("#btnStart").on("click", () => {
-  $("h1").text(`Level ${lvl}`);
-  $(".block").removeClass(" boxShadowRed transform");
-
-  setTimeout(() => {
-    startLvl();
-  }, 1000);
-
-  $("#btnStart").addClass("visible");
-});
