@@ -1,6 +1,7 @@
 let arrayOfRandoms = [];
 let clickedBlocks = [];
 let lvl = 1;
+let isAnimating = false;
 
 //================== Button start ======
 $("#btnStart").on("click", () => {
@@ -13,18 +14,26 @@ $("#btnStart").on("click", () => {
 //============ start lvl ==========
 
 async function startLvl() {
+  $("h1").text(`Level ${lvl}`);
+  $(".block").removeClass(" boxShadowRed transform");
+
   arrayOfRandoms = [];
   clickedBlocks = [];
 
+  disableClick();
+  isAnimating = true;
   await animateLvls();
+  isAnimating = false;
+
   addClickFn();
+
   console.log(arrayOfRandoms);
 }
 //====================================================
 
 //============= animate lvls ================
 async function animateLvls() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < lvl; i++) {
     let randomNumber = Math.floor(Math.random() * 4) + 1;
 
     arrayOfRandoms.push(randomNumber);
@@ -82,17 +91,24 @@ function sleep(ms) {
 //===================== choose block ============
 
 function addClickFn() {
+  disableClick();
   $(".block").click(function (e) {
+    if (isAnimating) return;
     clickedBlocks.push(Number(e.target.id));
-    let number = e.target.id;
     let target = e.target;
+    console.log(clickedBlocks);
 
-    animateBlock(number);
     compareArrays(clickedBlocks, arrayOfRandoms, target);
   });
 }
 
 // ==========================================
+
+//====================== disable click=============
+function disableClick() {
+  $(".block").off("click");
+}
+//==================================
 
 // ================= compare Arrays ==============
 
@@ -102,6 +118,8 @@ function compareArrays(clickedBlocks, arrayOfRandoms, target) {
   switch (clickedBlocks[i] !== arrayOfRandoms[i]) {
     case true:
       animateRed(target);
+      lose();
+      return;
       break;
 
     case false:
@@ -123,3 +141,23 @@ function compareArrays(clickedBlocks, arrayOfRandoms, target) {
     }, 2000);
   }
 }
+
+// ================= lvl counter ================
+function lvlCounter() {
+  lvl = lvl + 1;
+  $("h1").text(`Level ${lvl}`);
+  disableClick();
+  return lvl;
+}
+
+//========================================
+
+//===================== lose fn ====================
+function lose() {
+  disableClick();
+  lvl = 1;
+  $("h1").text("You lose...");
+  $("#btnStart").removeClass("visible");
+}
+
+//==========================================
