@@ -10,7 +10,7 @@ body {
 }
 .blocks {
   margin-top: 20px;
-  width: 50%;
+  width: 500px;
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
@@ -75,4 +75,43 @@ body {
 }
 .visible {
   display: none;
+}
+
+@media (max-width: 760px) {
+  .block {
+    width: 170px;
+    height: 170px;
+    border: 10px black solid;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blocks {
+    margin-top: 20px;
+    width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+  }
+}
+@media (max-width: 460px) {
+  .block {
+    width: 120px;
+    height: 120px;
+    border: 10px black solid;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blocks {
+    margin-top: 20px;
+    width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+  }
 }
